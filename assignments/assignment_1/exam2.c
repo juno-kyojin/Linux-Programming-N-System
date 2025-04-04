@@ -1,0 +1,1 @@
+/*Tạo một shared library (.so)*/
