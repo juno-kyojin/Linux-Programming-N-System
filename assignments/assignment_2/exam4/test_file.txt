@@ -1,0 +1,2 @@
+This is a test file created for assignment 2.
+This file demonstrates using stat() function.
