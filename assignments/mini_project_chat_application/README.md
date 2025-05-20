@@ -31,7 +31,7 @@ sudo apt install build-essential
 Clone or extract the project to your local machine:
 
 ```bash
-cd ~/path/to/Mini_project_Chat_Application
+cd ~/path/to/mini_project_chat_application
 ```
 
 ## Build Instructions
@@ -39,7 +39,7 @@ cd ~/path/to/Mini_project_Chat_Application
 Navigate to the project directory:
 
 ```bash
-cd Mini_project_Chat_Application
+cd mini_project_chat_application
 ```
 
 Build the application:
@@ -202,7 +202,7 @@ No active connections.
 ## Project Structure
 
 ```
-Mini_project_Chat_Application/
+mini_project_chat_application/
 ├── Makefile
 ├── README.md
 ├── bin
