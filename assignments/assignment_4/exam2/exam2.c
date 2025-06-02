@@ -7,53 +7,53 @@
 // Hỏi: Tại sao cần mutex trong bài này? Điều gì xảy ra nếu bỏ mutex?
 // Gợi ý: Sử dụng pthread_mutex_lock và pthread_mutex_unlock để khóa và mở khóa mutex khi truy cập vào counter.
 
-
 #include <stdio.h>
-#include <stdlib.h>
 #include <pthread.h>
-#include <unistd.h>
+#include <stdlib.h>
 
-// Global variables
-int counter = 0;
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+long long counter = 0;
+pthread_mutex_t mutex;
 
-// Thread function
 void* increment_counter(void* arg) {
-    for(int i = 0; i < 1000000; i++) {
-        // Lock mutex before accessing counter
-        pthread_mutex_lock(&mutex);
+    for (int i = 0; i < 1000000; i++) {
+        if (pthread_mutex_lock(&mutex) != 0) {
+            perror("Mutex lock failed");
+            exit(1);
+        }
         counter++;
-        // Unlock mutex after accessing counter
-        pthread_mutex_unlock(&mutex);
+        if (pthread_mutex_unlock(&mutex) != 0) {
+            perror("Mutex unlock failed");
+            exit(1);
+        }
     }
     return NULL;
 }
 
 int main() {
+    if (pthread_mutex_init(&mutex, NULL) != 0) {
+        perror("Mutex init failed");
+        return 1;
+    }
+
     pthread_t threads[3];
-    
-    // Create 3 threads
-    for(int i = 0; i < 3; i++) {
-        if(pthread_create(&threads[i], NULL, increment_counter, NULL) != 0) {
-            perror("Failed to create thread");
+    for (int i = 0; i < 3; i++) {
+        if (pthread_create(&threads[i], NULL, increment_counter, NULL) != 0) {
+            perror("Thread creation failed");
+            pthread_mutex_destroy(&mutex);
             return 1;
         }
     }
-    
-    // Wait for all threads to complete
-    for(int i = 0; i < 3; i++) {
-        if(pthread_join(threads[i], NULL) != 0) {
-            perror("Failed to join thread");
+
+    for (int i = 0; i < 3; i++) {
+        if (pthread_join(threads[i], NULL) != 0) {
+            perror("Thread join failed");
+            pthread_mutex_destroy(&mutex);
             return 1;
         }
     }
-    
-    // Print final counter value
-    printf("Final counter value: %d\n", counter);
-    
-    // Destroy mutex
+
+    printf("Final counter value: %lld\n", counter);
     pthread_mutex_destroy(&mutex);
-    
+
     return 0;
 }
-
